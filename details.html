@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<HTML>
+    <HEAD>
+        <meta charset="UTF-8">
+        <meta name="description" content="YouTube API Search">
+        <meta name="keywords" content="YouTube, API, JavaScript">
+        <title> YouTube API Search </title>
+        <link rel="icon" href="./images/favicon.png"> 
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+        <script src="semantic/dist/semantic.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="./styles/style.css">
+    </HEAD>
+    <BODY>
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+              <div class="container d-flex justify-content-center">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="search_form" placeholder="Search">
+                        <button type="button" id="search_button" class="btn btn-primary"><i class="material-icons md-10">search</i></button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="embed embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src=""></iframe>
+            </div>
+            <br>
+            <div class="jumbotron jumbotron-fluid" id="title-head">
+                <div class="container">
+                    <h5 class="display-4" id="title"></h5>
+                    <div class="stat">
+                        <img width="25" height="25" src="./images/remove_red_eye-white-36dp.svg" alt="" />
+                        <span id="view"></span>
+                        <img width="25" height="25" src="./images/thumb_up-white-36dp.svg" alt="" />
+                        <span id = "likes"></span>
+                        <img width="25" height="25" src="./images/thumb_down-white-36dp.svg" alt="" />
+                        <span id="dislikes"></span>
+                     </div>
+                </div>
+            </div>
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <p id="description"></p>
+                </div>   
+        </div> 
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const myParam = urlParams.get('key');
+            console.log(myParam);
+            var api=(`https://www.googleapis.com/youtube/v3/videos?id=${myParam}&part=snippet,statistics&key=AIzaSyBSyeutFimQBEkC7Wq53uUubVntdwiACHs`)
+            fetch(api)
+                .then(function(response){
+                    return response.json();
+                })
+                .then(function(result){
+                    console.log(result);
+                    var title = result.items[0].snippet.localized.title;
+                    $("#title").text(title);
+                    var description = result.items[0].snippet.localized.description;
+                    $("#description").text(description);
+                    $(".embed-responsive-item").attr("src", `https://www.youtube.com/embed/${myParam}`);
+                    var views = result.items[0].statistics.viewCount;
+                    $("#view").text(views);
+                    var likes = result.items[0].statistics.likeCount;
+                    $("#likes").text(likes);
+                    var dislike = result.items[0].statistics.dislikeCount;
+                    $("#dislikes").text(dislike);
+                })
+            $(document).ready(function(){
+                $("#search_button").click(function(){
+                    console.log("OK");
+                    var search = $("#search_form").val();
+                    var newURLString = "./index.html" + "?search=" + search;
+                    window.location.href = newURLString;
+                })
+            })
+        </script>
+    </BODY>
+</HTML>

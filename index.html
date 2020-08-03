@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<HTML>
+    <HEAD>
+        <meta charset="UTF-8">
+        <meta name="description" content="YouTube API Search">
+        <meta name="keywords" content="YouTube, API, JavaScript">
+        <title> YouTube API Search </title>
+        <link rel="icon" href="./images/favicon.png"> 
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+        <script src="semantic/dist/semantic.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="./styles/style.css">
+    </HEAD>
+    <BODY>
+        <div class="container">
+            <div class="container d-flex justify-content-center">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="search_form" placeholder="Search">
+                        <button type="button" id="search_button" class="btn btn-primary"><i class="material-icons md-10">search</i></button>
+                    </div>
+                </form>
+            </div>
+            <div class="alert alert-warning" role="alert" id="error-bar">
+                <p>Search camp can't be blank</p>
+            </div>
+            <!--CARDS-->
+            <div class="row justify-content-center align-items-center">
+                <div class="card-group">
+                    <!--CARD 01-->
+                    <div class="card">
+                        <img class="card-img-top0" src="">
+                        <div class="card-body0">
+                            <h5 class="card-title0"></h5>
+                            <p class="card-text0"></p>
+                        </div>
+                        <button type="button" class="btn btn-primary 1" value="0">Details</button>
+                    </div>
+                    <!--CARD 02-->
+                    <div class="card">
+                        <img class="card-img-top1" src="">
+                        <div class="card-body1">
+                            <h5 class="card-title1"></h5>
+                            <p class="card-text1"></p>
+                        </div>
+                        <button type="button" class="btn btn-primary 1" value="1">Details</button>
+                    </div>
+                    <!--CARD 03-->
+                    <div class="card">
+                        <img class="card-img-top2" src="">
+                        <div class="card-body2">
+                            <h5 class="card-title2"></h5>
+                            <p class="card-text2"></p>
+                        </div>
+                        <button type="button" class="btn btn-primary 1" value="2">Details</button>
+                    </div>
+                </div>
+            </div>
+            <!--END CARDS-->  
+        </div>  
+        <script>
+            $(document).ready(function(){
+                const urlParams = new URLSearchParams(window.location.search);
+                const myParam = urlParams.get('search');
+                var count;
+                console.log (myParam);
+                var search_content;
+                $("#search_button").click(function(){
+                    if (count==1){
+                        
+                        search_content = myParam;
+                    }
+                    else{
+                        search_content = $("#search_form").val();
+                        console.log ("OK");
+                    }
+                    if (search_content==""){
+                        $("#error-bar").show();
+                    }
+                    else{
+                        $("#error-bar").hide();
+                        $(".row.justify-content-center.align-items-center").show();
+                        console.log (search_content);
+                        var api=(`https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=${search_content}&maxResults=6&type=video&key=AIzaSyDe35_p8cVokuHZYGpZqZp-a9BkUMKi90M`)
+                        fetch(api)
+                            .then(function(response){
+                                return response.json();
+                            })
+                            .then(function(result){
+                                console.log(result);
+                                const title=[];
+                                const description=[];
+                                const thumbnail=[];
+                                const key=[];
+                                for (var count = 0; count<3; count++){
+                                    console.log (count);
+                                    title.push(result.items[count].snippet.title);
+                                    description.push(result.items[count].snippet.description);
+                                    thumbnail.push(result.items[count].snippet.thumbnails.medium.url);
+                                    key.push(result.items[count].id.videoId);
+                                    console.log (title[count]);
+                                    $(`.card-title${count}`).text(title[count]);
+                                    $(`.card-text${count}`).text(description[count]);
+                                    $(`.card-img-top${count}`).attr("src", thumbnail[count]);
+                                }
+                                $(".btn.btn-primary.1").click(function(){
+                                    var option = $(this).val();
+                                    console.log (option);
+                                    switch (option){
+                                        case '0':
+                                            var newURLString = "./details.html" + "?key=" + key[0];
+                                            window.location.href = newURLString;
+                                            break;
+                                        case '1':
+                                            var newURLString = "./details.html" + "?key=" + key[1];
+                                            window.location.href = newURLString;
+                                            break;
+                                        case '2':
+                                            var newURLString = "./details.html" + "?key=" + key[2];
+                                            window.location.href = newURLString;
+                                            break;
+                                    } 
+                                })
+                            })
+                        }
+                    });
+                    if (myParam!==null)
+                    {
+                        console.log ("THIS");
+                        count = 1
+                        $("#search_button").trigger("click");
+                    
+                    }
+            })
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </BODY>
+</HTML>

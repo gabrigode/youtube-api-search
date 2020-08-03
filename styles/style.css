@@ -1,0 +1,30 @@
+body,html{
+    height: 100%;
+    font-family: 'Roboto', sans-serif;;
+}
+
+.form-inline{
+    position: relative;
+}
+
+.row.justify-content-center.align-items-center{
+    display: none;
+}
+
+#error-bar{
+    display: none;
+  }
+
+.stat-like{
+    align-items: center;
+}
+
+.btn.btn-primary{
+    background-color:red;
+    border-color: red;
+}
+
+#title-head{
+    background-color: red;
+    color: white;
+}
